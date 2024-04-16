@@ -6,6 +6,7 @@ https://github.com/iot201-2024-KimYunbae/switch_with_relay/assets/164156059/38a5
 
 
 ```python
+# 릴레이 코드
 from IO7FuPython import Device, ConfiguredDevice
 import json
 import time
@@ -51,5 +52,49 @@ while True:
 
 
 
+# 스위치 코드
+from IO7FuPython import Device, ConfiguredDevice
+import json
+import time
+import ComMgr
+from machine import Pin
 
-ㅜ
+led = Pin(2,Pin.OUT)
+sw1 = Pin(19, Pin.IN, Pin.PULL_UP)
+sw2 = Pin(23, Pin.IN, Pin.PULL_UP)
+
+
+def pressed1(p):
+    if not p.value():
+        switch = "on"
+        device.publishEvent('status', json.dumps({"d":{ "switch": switch }}))
+        led.on()
+        time.sleep(0.2)
+
+def pressed2(p):
+    if not p.value():
+        switch = "off"      
+        device.publishEvent('status', json.dumps({"d":{ "switch": switch }}))
+        led.off()
+        time.sleep(0.2)
+             
+
+nic = ComMgr.startWiFi('io7lux')
+device = ConfiguredDevice()
+device.setUserCommand(pressed1)
+device.setUserCommand(pressed2)
+device.connect()
+
+sw1.irq(trigger=Pin.IRQ_FALLING, handler=pressed1)
+sw2.irq(trigger=Pin.IRQ_FALLING, handler=pressed2)
+
+
+try:
+    while True:
+        pass
+
+except Exception as e:
+        print("Error checking message:", e)    
+
+
+
