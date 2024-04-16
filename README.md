@@ -5,7 +5,7 @@ https://github.com/iot201-2024-KimYunbae/switch_with_relay/assets/164156059/38a5
 
 
 
-'''python
+```python
 from IO7FuPython import Device, ConfiguredDevice
 import json
 import time
